@@ -3,7 +3,6 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
@@ -26,5 +25,10 @@
             Anonymous
         {% endif %}
     {% endif %}
-
+    <h1>get all users</h1>
+{{ dump(users) }}
+    {% for user in users %}
+        <li></li>
+        <li>{{ user.id }}|{{user.email}} {{user.roles|join(',')}}</li>
+    {% endfor %}
 {% endblock %}

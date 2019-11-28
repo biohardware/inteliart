@@ -2,54 +2,64 @@
 
 namespace App\Controller;
 
-use Psr\Container\ContainerInterface;
+use App\Entity\User;
+use App\Form\UserEditFormType;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
- /**
-  * Require ROLE_ADMIN for *every* controller method in this class.
-  *
-  * @IsGranted("ROLE_ADMIN")
-  */
-
-/**
- * @Route("/admin", name="admin_")
- */
 class AdminController extends AbstractController
 {
+
     /**
-     * @Route("/admin", name="index")
+     * @Route("/all_users", name="get_all_users")
      */
-    public function index()
+
+    public function all_users(UserRepository $userRepository )
     {
-        return $this->render('admin/index.html.twig', [
-            'controller_name' => 'AdminController',
+        $users = $userRepository->findAll();
+        return $this->render('admin/users.html.twig', [
+            'error' => '','users' => $users
         ]);
     }
     /**
-          * Require ROLE_ADMIN for only this controller method.
-          *
-          * @IsGranted("ROLE_ADMIN")
-          */
-    public function adminDashboard()
+     * @Route("/all_users1", name="get_all_users1")
+     */
+    public function all_users1(UserRepository $userRepository, EntityManagerInterface $entityManager)
     {
-
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        // or add an optional message - seen by developers
-        $this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'User tried to access a page without having ROLE_ADMIN');
+        $users=$entityManager->getRepository(User::class)->findAll();
+        return $this->render('admin/users1.html.twig', [
+            'error' => '','users' => $users
+        ]);
     }
-    public function admin_teszt()
+    /**
+     * @Route("/user_edit", name="app_user_edit")
+     */
+    public function user_edit(Request $request,EntityManagerInterface $entityManager, UserRepository $userRepository )
     {
-        $user = $this->security->getUser();
-        // BAD - $user->getRoles() will not know about the role hierarchy
+        //$user = new User();
+        $id=$request->get('user_id');
 
-        $hasAccess = in_array('ROLE_ADMIN', $user->getRoles());
+        $user=$userRepository->find($id);
+        $userform=$this->createForm(UserEditFormType::class,$user);
+        $userform->handleRequest($request);
 
-// GOOD - use of the normal security methods
-        $hasAccess = $this->isGranted('ROLE_ADMIN');
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        if ($userform->isSubmitted() && $userform->isValid())
+        {
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            $this->addFlash("success","Sikeres mentés");
+            return $this->redirectToRoute("admin/users.html.twig");
+        }
+
+        return $this->render('admin/user_edit.html.twig', [
+            'userform' => $userform->createView()
+        ]);
     }
+
+
 }

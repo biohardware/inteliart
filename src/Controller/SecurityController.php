@@ -28,10 +28,32 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/logout", name="app_logout")
+     * @Route("/logout",name="app_logout")
      */
     public function logout()
     {
-        throw new \Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
+        return $this->render('security/logout.html.twig');
+
+        // throw new \Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
+    }
+    /**
+     * @Route("/")
+     */
+    public function index()
+    {
+        return $this->render('security/logout.html.twig');
+
+        // throw new \Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
+    }
+
+    public function all_users()
+    {
+        $userManager = $this->get('fos_user.user_manager');
+        $users = $userManager->findUsers();
+
+        $error="";
+        return $this->render('security/users.html.twig',['users' =>$user,'error' => $error]);
+
+        // throw new \Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
     }
 }
