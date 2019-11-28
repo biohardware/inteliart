@@ -8,11 +8,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends AbstractController
 {
     /**
-     * @Route("/product", name="product")
+     * @Route("/", name="product")
      */
     public function index()
     {
-        return $this->render('product/index.html.twig', [
+        return $this->render('base.html.twig', [
             'controller_name' => 'ProductController',
         ]);
     }

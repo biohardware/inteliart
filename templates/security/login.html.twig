@@ -12,6 +12,16 @@
         <div class="mb-3">
             You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
         </div>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="...">Delete</a>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
+            Administrator
+        {% elseif is_granted('ROLE_USER') %}
+            User
+        {% else %}
+            Anonymous
+        {% endif %}
     {% endif %}
 
     <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
