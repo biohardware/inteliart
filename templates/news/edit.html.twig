@@ -3,9 +3,10 @@
 {% block title %}Hello NewsController!{% endblock %}
 
 {% block body %}
+    <h1>add news</h1>
+    {{ form_start(newsform) }}
 
-    <a href="{{ path('news_all') }}">Összes hír</a>
-    <a href="{{ path('news_add') }}">hír hozzáadása</a>
 
 
+    {{ form_end(newsform) }}
 {% endblock %}
