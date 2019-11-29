@@ -68,7 +68,8 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
 
 
-    //    $hasAccess = in_array('ROLE_ADMIN', $user->getRoles());
+        //    $hasAccess = in_array('ROLE_ADMIN', $user->getRoles());
+            //$hasAccess = in_array('ROLE_ADMIN', $user->getRoles());
 
 // GOOD - use of the normal security methods
       //  $hasAccess = $this->isGranted('ROLE_ADMIN');
