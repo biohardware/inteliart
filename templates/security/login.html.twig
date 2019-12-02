@@ -16,6 +16,9 @@ Hello
         <div class="mb-3">
            <a href="{{ path('get_all_users') }}">All Users</a>
         </div>
+        <div class="mb-3">
+            <a href="{{ path('news') }}">News</a>
+        </div>
         {% if is_granted('ROLE_ADMIN') %}
             <a href="#">Delete</a>
         {% endif %}
@@ -26,7 +29,8 @@ Hello
         {% else %}
             Anonymous
         {% endif %}
-    {% endif %}
+    {% else %}
+
     <form method="post" action="{{ path('app_login') }}">
 
 
@@ -55,4 +59,5 @@ Hello
             Sign in
         </button>
     </form>
+    {% endif %}
 {% endblock %}

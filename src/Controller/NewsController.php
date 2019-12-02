@@ -32,15 +32,17 @@ class NewsController extends AbstractController
         $news = new News();
         //$id=$request->get('user_id');
 
-       // $user=$userRepository->find($id);
+        //$user=$userRepository->find($id);
         $newsform=$this->createForm(NewsType::class,$news);
         $newsform->handleRequest($request);
 
 
         if ($newsform->isSubmitted() && $newsform->isValid())
         {
-            $userId = $user->getId();
-            $news->setUserId($userId);
+//die("itt: ".$user->getId())
+           // $news->setUserId($user->getId());
+            $news->setUser($user);
+
             $news->setActive(1);
             $entityManager->persist($news);
             $entityManager->flush();
