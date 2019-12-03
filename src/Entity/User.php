@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
@@ -32,7 +33,7 @@ class User implements UserInterface
      */
     private $password;
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="boolean", nullable=true)
      */
     private $active;
 
@@ -41,13 +42,20 @@ class User implements UserInterface
      */
     private $news;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\News", mappedBy="readers")
+     */
+    private $readable_news;
+
     public function __construct()
     {
         $this->news = new ArrayCollection();
+        $this->active = 1;
+        $this->readable_news = new ArrayCollection();
     }
 
 
-    public function getId(): ?bool
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -121,12 +129,12 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
-    public function getActive(): ?int
+    public function getActive(): ?bool
     {
         return $this->active;
     }
 
-    public function setActive(int $active): self
+    public function setActive(bool $active): self
     {
         $this->active = $active;
         return $this;
@@ -158,6 +166,34 @@ class User implements UserInterface
             if ($news->getCreatedBy() === $this) {
                 $news->setCreatedBy(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|News[]
+     */
+    public function getReadableNews(): Collection
+    {
+        return $this->readable_news;
+    }
+
+    public function addReadableNews(News $readableNews): self
+    {
+        if (!$this->readable_news->contains($readableNews)) {
+            $this->readable_news[] = $readableNews;
+            $readableNews->addReader($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReadableNews(News $readableNews): self
+    {
+        if ($this->readable_news->contains($readableNews)) {
+            $this->readable_news->removeElement($readableNews);
+            $readableNews->removeReader($this);
         }
 
         return $this;

@@ -1,12 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello NewsController!{% endblock %}
+{% block title %}Hír hozzáadása/szerkesztése{% endblock %}
 
 {% block body %}
     <h1>add news</h1>
     {{ form_start(newsform) }}
 
-
+    {{ form_row(newsform.title) }}
+    {{ form_row(newsform.description) }}
+    {{ form_row(newsform.add_date) }}
+    {{ form_row(newsform.submit_btn) }}
 
     {{ form_end(newsform) }}
 {% endblock %}

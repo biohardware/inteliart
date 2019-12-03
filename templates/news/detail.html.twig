@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+
+
+    <h1>{{ news.title }}</h1>
+    <span>{{ news.addDate|date("Y-m-d H:i:s") }}</span>
+    <span>Author: {{ news.createdBy }}</span>
+    <h3>{{ news.slug }}</h3>
+
+<div class="col-xs-6">
+    {{ news.description }}
+
+</div>
+
+
+{% endblock %}

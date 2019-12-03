@@ -15,7 +15,7 @@ class NewsController extends AbstractController
 {
     /**
      * @Route("/news/add", name="news_add")
-     * @Route("/news/edit/{id}/{page}", name="news_edit")
+     * @Route("/news/edit/{id}", name="news_edit")
      */
     public function news_add(Request $request, EntityManagerInterface $entityManager, News $news = null)
     {
@@ -29,7 +29,6 @@ class NewsController extends AbstractController
 
         if ($newsform->isSubmitted() && $newsform->isValid()) {
 
-            $news->setCreatedBy($this->getUser());
 
             $news->setActive(1);
 
@@ -40,7 +39,7 @@ class NewsController extends AbstractController
             return $this->redirectToRoute("news");
         }
 
-        return $this->render('news/add.html.twig', [
+        return $this->render('news/edit.html.twig', [
             'newsform' => $newsform->createView()
         ]);
 
@@ -58,17 +57,38 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Route("/news/delete", name="news_delete")
+     * @Route("/news/delete/{id}", name="news_delete")
      */
-    public function news_delete(EntityManagerInterface $entityManager, Request $request, NewsRepository $newsRepository)
+    public function news_delete(EntityManagerInterface $entityManager, Request $request, NewsRepository $newsRepository, News $news)
     {
-        $news_id = $request->get("new_id");
-        $news = $newsRepository->find($news_id);
+
         $entityManager->remove($news);
         $entityManager->flush();
         $error = "";
         return $this->render('news/all.html.twig', [
             'error' => ''
         ]);
+    }
+
+    /**
+     * @Route("/news/readable_news", name="readable_news")
+     */
+    public function readable_news(EntityManagerInterface $entityManager)
+    {
+        $news = $entityManager->getRepository(News::class)->getReadableNews($this->getUser());
+        return $this->render('news/all.html.twig', [
+            'error' => '', 'news' => $news
+        ]);
+    }
+
+    /**
+     * @param News $news
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/news/{slug}",name="news_get_news")
+     */
+    public function getNews(News $news)
+    {
+        return $this->render('news/detail.html.twig',
+            ['news' => $news]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\News;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -19,32 +20,12 @@ class NewsRepository extends ServiceEntityRepository
         parent::__construct($registry, News::class);
     }
 
-    // /**
-    //  * @return News[] Returns an array of News objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getReadableNews(User $user)
     {
-        return $this->createQueryBuilder('n')
-            ->andWhere('n.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('n.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $qb=$this->createQueryBuilder('n')
+            ->where(':user MEMBER OF n.readers')
+            ->setParameter('user',$user);
+        
+        return $qb->getQuery()->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?News
-    {
-        return $this->createQueryBuilder('n')
-            ->andWhere('n.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

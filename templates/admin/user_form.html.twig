@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+
+    <h1>Edit user</h1>
+    {{ form_start(userform,{
+        'attr':{'autocomplete' : 'off'}}
+    ) }}
+
+
+          {{ form_row(userform.email) }}
+          {{ form_row(userform.active) }}
+
+    {{ form_row(userform.roles) }}
+    {% if userform.password is defined %}
+    {{ form_row(userform.password) }}
+    {% endif %}
+          {{ form_row(userform.submit_btn) }}
+
+
+
+    {{ form_end(userform) }}
+{% endblock %}

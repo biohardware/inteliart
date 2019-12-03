@@ -1,21 +1,23 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Log in!{% endblock %}
+{% block menu %}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_user_add') }}">Add a new user</a>
+    </li>
 
+
+{% endblock %}
 {% block body %}
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
     {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
-        </div>
-        <div class="mb-3">
-           <a href="{{ path('get_all_users') }}">All Users</a>
-        </div>
+
+Your Role is:
         {% if is_granted('ROLE_ADMIN') %}
-            <a href="#">Delete</a>
+
         {% endif %}
         {% if is_granted('ROLE_ADMIN') %}
             Administrator
@@ -26,16 +28,29 @@
         {% endif %}
     {% endif %}
     <h1>get all users</h1>
-    {#{{ dump(users) }}#}
 
-    <table style="width: 100%">
+    <table class="table">
+        <thead>
+        <tr>
+        <th>ID</th>
+        <th>E-mail</th>
+        <th>Roles</th>
+        <th>Edit</th>
+        <th>Delete</th>
+        </tr>
+        </thead>
     {% for user in users %}
+
+
         <tr>
             <td>{{ user.id }}</td>
             <td>{{user.email}}</td>
             <td>{{user.roles|join(',')}}</td>
             <td>
                 <a href="{{ path('app_user_edit', {'user': user.id}) }}" class="btn btn-primary">Edit</a>
+            </td>
+            <td>
+                <a href="{{ path('app_user_delete', {'user': user.id}) }}"  onclick="return confirm('Biztos, hogy törlöd?')" class="btn btn-danger">Delete</a>
             </td>
         </tr>
     {% endfor %}

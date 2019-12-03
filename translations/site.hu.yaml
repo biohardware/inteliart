@@ -1,0 +1,5 @@
+form:
+  user:
+    email: E-mail címed
+    active: Aktív
+    password: Jelszó

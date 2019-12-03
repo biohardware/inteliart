@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AdminController extends AbstractController
 {
@@ -19,34 +20,42 @@ class AdminController extends AbstractController
 
     public function all_users(UserRepository $userRepository)
     {
+
         $users = $userRepository->findAll();
+
+
         return $this->render('admin/users.html.twig', [
             'error' => '', 'users' => $users
         ]);
     }
 
-    /**
-     * @Route("/all_users1", name="get_all_users1")
-     */
-    public function all_users1(UserRepository $userRepository, EntityManagerInterface $entityManager)
-    {
-        $users = $entityManager->getRepository(User::class)->findAll();
-        return $this->render('admin/users1.html.twig', [
-            'error' => '', 'users' => $users
-        ]);
-    }
 
     /**
+     * @Route("/user_add", name="app_user_add")
      * @Route("/user_edit/{user}", name="app_user_edit")
      */
-    public function user_edit(Request $request, EntityManagerInterface $entityManager, User $user)
+    public function user_edit(Request $request, EntityManagerInterface $entityManager, User $user=null, UserPasswordEncoderInterface $encoder)
     {
-
-        $userform = $this->createForm(UserEditFormType::class, $user);
+        if (!$user){
+            $user=new User();
+        }
+        $userform = $this->createForm(UserEditFormType::class, $user, [
+            'edit' => $user->getId()
+        ]);
 
         $userform->handleRequest($request);
 
-        if ($userform->isSubmitted() && $userform->isValid()) {
+        if ($userform->isSubmitted() && $userform->isValid())
+        {
+            if (!$user->getId()){
+                $password="dfsdafsafadsfadsfasd";
+            }else{
+                $password = $userform["password"]->getData();
+            }
+
+            $encoded = $encoder->encodePassword($user, $password);
+
+            $user->setPassword($encoded);
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -55,10 +64,20 @@ class AdminController extends AbstractController
             return $this->redirectToRoute("get_all_users");
         }
 
-        return $this->render('admin/user_edit.html.twig', [
+        return $this->render('admin/user_form.html.twig', [
             'userform' => $userform->createView()
         ]);
     }
 
+        /**
+         * @Route("/user_delete/{user}", name="app_user_delete")
+         */
+        public function user_delete(User $user, EntityManagerInterface $entityManager)
+        {
+            $entityManager->remove($user);
+            $entityManager->flush();
+            $error = "";
+            return $this->redirectToRoute("get_all_users");
 
+        }
 }

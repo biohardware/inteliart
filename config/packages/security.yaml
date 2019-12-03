@@ -39,6 +39,7 @@ security:
     access_control:
             # require ROLE_ADMIN for /admin*
             - { path: '^/admin', roles: ROLE_ADMIN }
+            - { path: '^/all_users', roles: ROLE_USER }
 
             # or require ROLE_ADMIN or IS_AUTHENTICATED_FULLY for /admin*
             - { path: '^/admin', roles: [IS_AUTHENTICATED_FULLY, ROLE_ADMIN] }

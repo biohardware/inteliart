@@ -1,20 +1,39 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Log in!{% endblock %}
+{% block menu %}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('news_add') }}">Add a news</a>
+    </li>
 
+{% endblock %}
 {% block body %}
+
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
 
     <h1>get all news</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Edit</th>
+            <th>Delete</th>
+            <th>Slug</th>
+        </tr>
+        </thead>
+
     {% for new in news %}
-
-        <li>{{ new.id }}|{{new.title}}
-            <a href="{{ path('news_edit', {'id': new.id}) }}" class="btn btn-primary">Edit</a>
-            <a href="{{ path('news_delete') }}" class="btn btn-danger">Delete</a>
-
-        </li>
+    <tr>
+        <td>{{ new.id }}</td>
+        <td>{{new.title}}</td>
+        <td><a href="{{ path('news_edit', {'id': new.id}) }}" class="btn btn-primary">Edit</a></td>
+        <td><a href="{{ path('news_delete', {'id': new.id}) }}" class="btn btn-danger">Delete</a></td>
+        <td><a target="_blank" href="{{ path('news_get_news', {'slug': new.slug}) }}">slug</a></td>
+           </tr>
     {% endfor %}
+    </table>
 {% endblock %}

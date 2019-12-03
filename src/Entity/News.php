@@ -2,13 +2,20 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Blameable\Traits\BlameableEntity;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NewsRepository")
  */
 class News
 {
+    use BlameableEntity;
+    use TimestampableEntity;
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -32,10 +39,22 @@ class News
      */
     private $active;
 
+
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="news")
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="readable_news")
      */
-    private $createdBy;
+    private $readers;
+
+    /**
+     * @Gedmo\Slug(fields={"title"})
+     * @ORM\Column(length=128,unique=true)
+     */
+    private $slug;
+
+    public function __construct()
+    {
+        $this->readers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -86,14 +105,40 @@ class News
         return $this;
     }
 
-    public function getCreatedBy(): ?User
+    /**
+     * @return Collection|User[]
+     */
+    public function getReaders(): Collection
     {
-        return $this->createdBy;
+        return $this->readers;
     }
 
-    public function setCreatedBy(?User $createdBy): self
+    public function addReader(User $reader): self
     {
-        $this->createdBy = $createdBy;
+        if (!$this->readers->contains($reader)) {
+            $this->readers[] = $reader;
+        }
+
+        return $this;
+    }
+
+    public function removeReader(User $reader): self
+    {
+        if ($this->readers->contains($reader)) {
+            $this->readers->removeElement($reader);
+        }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
