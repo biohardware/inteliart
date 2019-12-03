@@ -26,7 +26,7 @@
         {% endif %}
     {% endif %}
     <h1>get all users</h1>
-{{ dump(users) }}
+{#{{ dump(users) }}#}
     {% for user in users %}
         <li></li>
         <li>{{ user.id }}|{{user.email}} {{user.roles|join(',')}}</li>

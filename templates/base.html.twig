@@ -1,12 +1,30 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+
+
+<div>
+    {% if app.session.flashBag %}
+        {% for message in app.session.flashBag.get('success') %}
+            <b>{{ message }}</b> <br>
+        {% endfor %}
+    {% endif %}
+</div>
+{% if app.user %}
+    <nav>
+        <a href="{{ path('app_logout') }}">Logout</a>
+        <a href="{{ path('get_all_users') }}">All Users</a>
+        <a href="{{ path('news') }}">News</a>
+    </nav>
+    <hr>
+{% endif %}
+
+{% block body %}{% endblock %}
+{% block javascripts %}{% endblock %}
+</body>
 </html>

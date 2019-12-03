@@ -26,10 +26,18 @@
         {% endif %}
     {% endif %}
     <h1>get all users</h1>
-{{ dump(users) }}
+    {#{{ dump(users) }}#}
+
+    <table style="width: 100%">
     {% for user in users %}
-        <li></li>
-        <li>{{ user.id }}|{{user.email}} {{user.roles|join(',')}}
-            <a href="{{ path('app_user_edit',{user_id: user.id}) }}" class="btn btn-primary">Edit</a> </li>
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.roles|join(',')}}</td>
+            <td>
+                <a href="{{ path('app_user_edit', {'user': user.id}) }}" class="btn btn-primary">Edit</a>
+            </td>
+        </tr>
     {% endfor %}
+    </table>
 {% endblock %}

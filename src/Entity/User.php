@@ -1,9 +1,12 @@
 <?php
+
 namespace App\Entity;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
@@ -34,39 +37,32 @@ class User implements UserInterface
     private $active;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\News", mappedBy="User")
+     * @ORM\OneToMany(targetEntity="App\Entity\News", mappedBy="createdBy")
      */
     private $news;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\News", mappedBy="User")
-     */
-    private $f;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\News", inversedBy="users")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $News;
 
     public function __construct()
     {
         $this->news = new ArrayCollection();
-        $this->f = new ArrayCollection();
     }
+
+
     public function getId(): ?bool
     {
         return $this->id;
     }
+
     public function getEmail(): ?string
     {
         return $this->email;
     }
+
     public function setEmail(string $email): self
     {
         $this->email = $email;
         return $this;
     }
+
     /**
      * A visual identifier that represents this user.
      *
@@ -74,8 +70,9 @@ class User implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
+
     /**
      * @see UserInterface
      */
@@ -86,23 +83,27 @@ class User implements UserInterface
         $roles[] = 'ROLE_USER';
         return array_unique($roles);
     }
+
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
         return $this;
     }
+
     /**
      * @see UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return (string)$this->password;
     }
+
     public function setPassword(string $password): self
     {
         $this->password = $password;
         return $this;
     }
+
     /**
      * @see UserInterface
      */
@@ -110,6 +111,7 @@ class User implements UserInterface
     {
         // not needed when using the "bcrypt" algorithm in security.yaml
     }
+
     /**
      * @see UserInterface
      */
@@ -118,10 +120,12 @@ class User implements UserInterface
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
+
     public function getActive(): ?int
     {
         return $this->active;
     }
+
     public function setActive(int $active): self
     {
         $this->active = $active;
@@ -140,7 +144,7 @@ class User implements UserInterface
     {
         if (!$this->news->contains($news)) {
             $this->news[] = $news;
-            $news->setUser($this);
+            $news->setCreatedBy($this);
         }
 
         return $this;
@@ -151,48 +155,10 @@ class User implements UserInterface
         if ($this->news->contains($news)) {
             $this->news->removeElement($news);
             // set the owning side to null (unless already changed)
-            if ($news->getUser() === $this) {
-                $news->setUser(null);
+            if ($news->getCreatedBy() === $this) {
+                $news->setCreatedBy(null);
             }
         }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|News[]
-     */
-    public function getF(): Collection
-    {
-        return $this->f;
-    }
-
-    public function addF(News $f): self
-    {
-        if (!$this->f->contains($f)) {
-            $this->f[] = $f;
-            $f->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeF(News $f): self
-    {
-        if ($this->f->contains($f)) {
-            $this->f->removeElement($f);
-            // set the owning side to null (unless already changed)
-            if ($f->getUser() === $this) {
-                $f->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function setNews(?News $News): self
-    {
-        $this->News = $News;
 
         return $this;
     }
